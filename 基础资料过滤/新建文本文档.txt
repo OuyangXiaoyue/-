@@ -1,0 +1,8 @@
+QFilter [] qFilters =new QFilter[] { new QFilter("gz_expgroup.number", QCP.equals, gz_expgroup.getString("number"))};
+		DynamicObject [] boms=BusinessDataServiceHelper.load("er_expenseitemedit", "id", qFilters);
+		List<String> proIds=new LinkedList<String>();
+		for(DynamicObject bom :boms) {
+			proIds.add(bom.getString("id"));
+		}
+		ListShowParameter showParameter = (ListShowParameter) e.getFormShowParameter();
+		showParameter.getListFilterParameter().setFilter(new QFilter("id", QCP.in, proIds));

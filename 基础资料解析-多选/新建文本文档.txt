@@ -1,0 +1,12 @@
+ 
+ 
+ 
+ 
+	DynamicObjectCollection currencys = this.getModel().getValue("标识");//获取多选基础资料
+	String orgids="";
+	for (DynamicObject currency : currencys) { // 多选基础资料：作业检测组织
+		DynamicObject currencyObj = currency.getDynamicObject("fbasedataid");
+		String orgid = currencyObj.getString("id");
+		orgids+=orgid+",";
+	}
+	orgids = orgids.substring(0,orgids.length()-1);//去除最后一个,号

@@ -1,0 +1,5 @@
+一：异常-错误提示
+1.this.getView().showMessage("Hello，Word")//弹窗
+3.this.getView().showErrorNotification("红色提示");// 红色提示
+4.this.getView().showTipNotification("黄色提示");  // 黄色提示
+5.throw new KDBizException("的采购单位和结算单位不能为空");

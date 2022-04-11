@@ -1,0 +1,39 @@
+------------------------------------------------插件继承类-----------------------------------------------------------------
+插件继承类【extends】：
+一.PC端：
+	1.单据插件 AbstractBillPlugIn 
+	2.列表插件 AbstractListPlugIn 
+二.基础资料插件 AbstractBasePlugIn 
+	1.动态表单插件 AbstractFormPlugIn 
+	2.树型基础资料列表 AbstractTreeListPlugin 
+三.移动端：
+	1.移动表单插件 AbstractMobFormPlugin 
+	2.移动单据插件 AbstractMobBillPlugin 
+	6.移动列表插件 AbstractMobListPlugIn
+四.操作服务：
+	1.操作服务插件 AbstractOperationServicePlugIn 
+五.单据转换： 
+	2.单据转换插件 AbstractConvertPlugIn
+-------------------------------------------------插件类命名规范----------------------------------------------------------------
+插件类命名规范：
+（1）表单插件：{插件名}Plugin 如：TestFormPlugin； 
+（2）单据插件：{插件名}Edit 如：TestEditPlugin； 
+（3）列表插件：{插件名}List 如：TestrListPlugin； 
+（4）操作插件：{插件名}Op 如：TestOpPlugin； 
+（5）报表插件：{插件名}Rpt 如：TestRptPlugin;
+-------------------------------------------------方法名命名规范----------------------------------------------------------------
+方法名命名规范：
+推荐使用驼峰命名法：
+例如：修改某个值：updateValue(){}
+（1）获取单个对象的方法用 get 做前缀； 
+（2）获取多个对象的方法用 list 做前缀，复数形式结尾如：listObjects； 
+（3）获取统计值的方法用 count 做前缀； 
+（4）插入的方法用 save/insert 做前缀； 
+（5）删除的方法用 remove/delete 做前缀； 
+（6）修改的方法用 update 做前缀。
+-------------------------------------------------------------------------------------------------------------------------------
+1.变量命名：
+驼峰命名法：
+	String apple；int appleNumber;
+2.常量名全部大写
+如：public static final String GAME_COLOR=”RED”;

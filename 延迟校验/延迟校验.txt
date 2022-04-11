@@ -1,0 +1,7 @@
+String orderTagKey2 = "btnok";
+String orderTag2 = JedisUtils.get(orderTagKey2);
+if(orderTag2 != null){
+	throw new KDBizException(”等待其他用户加载，稍后再试! ");
+	this.getView().showTipNotification("等待其他用户加载，稍后再试! ");
+}
+JedisUtils.set(orderTagKey2,"true",2000);

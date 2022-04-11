@@ -1,0 +1,97 @@
+----------------------------------------where 条件----------------------------------------------------------
+1.==	=>	QFilter.equals
+2.in	=>	QFilter.in
+3.like	=>	QFilter.like
+4.>=	=>	QFilter.large_equals
+5.<=	=>	QFilter.less_equals
+----------------------------------------where 组合----------------------------------------------------------
+条件组合方式一：
+	QFilter orgFilter =new QFilter("数据库字段1",QFilter.equals,"值1");
+	orgFilter.and(new QFilter("数据库字段2",QFilter.equals,"值2"));
+	orgFilter.toString();
+条件组合方式二：
+	QFilter qTask = new QFilter("数据库字段1", QCP.equals, "值1").and("数据库字段2", QCP.equals, "值2")
+	qTask.toString();
+条件组合方式三：
+	QFilter.isNotNull("billno").toArray(); //单据编号不为null
+----------------------------------------查询语句----------------------------------------------------------
+查询方法一：查询多条数据		包含单据体查询		BusinessDataServiceHelper.load
+注解：出来的数据可以进行update等操作之后再save；
+		QFilter filter = new QFilter("billstatus", QFilter.equals, "C");// 条件1:单据为审核状态
+        String fieldloog = "id,billno,wens_job_listing,wens_jobstate,"// 单头字段	fieldloog-表示需要查询的字段
+                + "单据体标识.字段标识,"   //单据体字段-作业条目
+                + "wens_entryentity.wens_jobtime,"   // 单据体字段-作业时间
+                + "wens_entryentity.wens_isok";      // 单据体字段 -是否已完成
+        DynamicObject[] joblistinglist = BusinessDataServiceHelper.load("单据标识", fieldloog, filter.toArray());
+		//遍历数据
+		if (joblistinglist.length > 0) { // 判空-是否查到数据
+            for (DynamicObject joblisting : joblistinglist) {
+                Map<String,Object> map = new HashMap<>();
+                map.put("id",joblisting.getString("id"));
+                map.put("billno",joblisting.getString("billno"));
+                map.put("wens_jobstate",joblisting.getString("wens_jobstate"));// 作业清单状态
+                map.put("name",joblisting.getString("wens_job_listing.name"));// 作业清单名称
+                DynamicObjectCollection entry = joblisting.getDynamicObjectCollection("wens_entryentity");// 获取分录信息
+                if (entry.size() > 0) {	//判空-单据体是否查到数据
+                    List<Map<String,Object>> mapEntryList = new ArrayList<>();//存储分录信息
+                    for (DynamicObject queryentry : entry) {
+                        Map<String,Object> mapEntry = new HashMap<>();
+                        mapEntry.put("wens_describe",queryentry.getString("wens_jobitem.wens_describe"));//作业描述
+                        mapEntry.put("name",queryentry.getString("wens_jobitem.name"));// 作业条目名称
+                        mapEntry.put("wens_isok",queryentry.getString("wens_isok"));// 是否已完成
+                        mapEntryList.add(mapEntry);
+                    }
+                    map.put("mapEntryList",mapEntryList);
+                }
+                mapList.add(map);
+            }
+        }
+		
+查询方法二：查询多条数据		包含单据体查询		QueryServiceHelper.query
+注解：出来的数据不能进行update等操作之后再save，查询出来的数据只能查看
+		// 数据不区分单头，以单据体为主，解析：单据数据1={[单头+单据体数据1]+[单头+单据体数据2]}
+		DynamicObjectCollection query = QueryServiceHelper.query("cals_bill", "id", qfilter.toArray());
+		
+查询方法三：查询一条数据		包含单据体查询		BusinessDataServiceHelper.loadSingle
+注解：出来的数据可以进行update等操作之后再save；
+		DynamicObject loadSingle =BusinessDataServiceHelper.loadSingle("cals_bill","id", qfilter.toArray());
+
+查询方法四：根据ID查询一条数据的所有信息
+		String userId = RequestContext.get().getUserId(); // 获取当前用户ID
+		DynamicObject queryBill= BusinessDataServiceHelper.loadSingle(userId,"bos_user"); // 查询ID信息
+
+查询方法五：根据单据编码查询是否存在该单据
+		boolean isExist = QueryServiceHelper.exists("单据标识", "单据编码");
+	
+查询方法六：查询多条数据，根据日期排序，分页
+		int page = params.containsKey("page")?(int) params.get("page"):1;
+		int pageSize = params.containsKey("pageSize")?(int) params.get("pageSize"):10;
+		int from = (page - 1) * pageSize;
+		DynamicObject[] bills = BusinessDataServiceHelper.load("单据标识", 
+					"id,billno,approvaldate,billstatus,org,creator,"
+					+ ",pms_approval_entry.supplier,pms_approval_entry.untaxprice,pms_approval_entry.qty", 
+					QFilter.isNotNull("billno").toArray(), "approvaldate desc", from, pageSize);
+----------------------------------------获取用户信息----------------------------------------------------------
+String userid = RequestContext.get().getUserId();	// 获取当前用户ID
+Long orgid = RequestContext.get().getOrgId();		// 获取当前用户组织 
+
+----------------------------------------调用操作方法----------------------------------------------------------
+方法一：调用保存方法
+		SaveServiceHelper.save(new Dynamic0bject[] {warning});// 保存单据
+方法二：
+		SaveServiceHelper.saveoperate(new Dynamic0bject[] {warning});// 保存单据-没有组织时有检验
+方法三：调用删除方法
+		DeleteServiceHelper.delete("单据标识", (new QFilter("单据编号标识", QCP.equals, "单据编号")).toArray());
+		
+方法二：
+		ApiResult result = new ApiResult();
+		DynamicObject queryApproval = BusinessDataServiceHelper.loadSingle(billnoValue, "yhsp_pms_approval_bill");
+		queryApproval.set("billstatus","A");// 将状态改为暂存
+		try {
+			OperationResult resultSubmit = OperationServiceHelper.executeOperate("submit", "单据标识", new DynamicObject[]{queryApproval}, null);
+			if(!resultSubmit.isSuccess()) {
+				throw new KDBizException(resultSubmit.getMessage());
+			}					
+		} catch (Exception e) {
+			return ApiResult.fail(e.getMessage());
+		}
