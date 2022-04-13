@@ -1,0 +1,19 @@
+public class TestPlugin extends AbstractFormPlugin implements ItemClickListener {
+@Override
+  public void registerListener(EventObject event) {
+    Toolbar toolbar = this.getView().getControl("工具栏表示");
+    toolbar.addItemClickListener(this);
+  }
+  
+  *// 点击发生前*
+  @Override
+  public void beforeItemClick(BeforeItemClickEvnet event) {
+  
+  }
+  
+  *// 点击发生后*
+  @Override
+  public void itemClick(ItemClickEvent event) {
+  
+  }
+}

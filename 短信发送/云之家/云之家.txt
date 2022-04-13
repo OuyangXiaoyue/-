@@ -1,0 +1,11 @@
+
+
+String stitles ="标题";
+String content = "内容";
+ArrayList<Long> user = new ArrayList<Long>();
+YunzhijiaMessage.sendThMsg(stitle,content,user);
+
+
+//stitle-标题
+//content-发送内容
+//user-人员ID 

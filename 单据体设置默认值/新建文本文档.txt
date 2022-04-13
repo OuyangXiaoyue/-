@@ -1,0 +1,6 @@
+		this.getModel().deleteEntryData("单据体标识");		// 清空单据体的所有数据
+		int rowIndex = this.getModel().createNewEntryRow("单据体标识");	// 获取单据体的下标
+		this.getModel().setValue("单据体字段标识", "value", rowIndex);//		// 根据下标赋值
+		this.getView().updateView("单据体标识");							// 刷新单据体
+		IDataModel dataModel = this.getModel();
+		dataModel.batchCreateNewEntryRow("单据体标识",6);					// 批量插入单据体行

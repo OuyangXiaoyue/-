@@ -1,0 +1,29 @@
+FormShowParameter showParameter = new FormShowParameter();
+showParameter.setBillFormId("单据标识");// 注意这里是billFormId，指的是列表对应的单据标识，setFormId-动态表单和单据
+showParameter.getOpenStyle().setShowType(ShowType.Modal);		// 动态表单方式-ShowType.Modal 新开页签的方式-ShowType.MainNewTabPage 在页签内-打开页签ShowType.NewTabPage
+this.getView().showForm(showParameter);
+
+
+
+
+PC端1、打开动态表单 
+页面：FormShowParameter
+例：FormShowParameter showParameter = new FormShowParameter();			
+showParameter.setFormId("表单标识");			
+showParameter.getOpenStyle().setShowType(ShowType.Modal);//打开方式			
+this.getView().showForm(showParameter);
+关于FormShowParameter里面的功能大家可以自己尝试
+2、打开单据 页面：BillShowParameter
+3、打开基础资料 页面：BaseShowParameter
+4、打开报表 页面：ReportShowParameter
+5、打开标准列表 页面：ListShowParameter例：
+ListShowParameter showParameter = new ListShowParameter();			
+showParameter.setBillFormId("单据标识");//注意这里是billFormId，指的是列表对应的单据标识			
+showParameter.getOpenStyle().setShowType(ShowType.Modal);			
+this.getView().showForm(showParameter);移动端
+1、移动表单：MobileFormShowParameter 与FormShowParameter类似
+2、移动单据：MobileBillShowParameter 与BillShowParameter类似
+3、移动基础资料：MobileBaseShowParameter 与BaseShowParameter 相同
+4、移动列表：MobileListShowParameter 与ListShowParameter类似注：移动端的实体是PC端，但是标识是移动端的标识，
+这里有一个特例，如果你想要打开PC端单据页面中对应的移动列表的话，billFormId还是要传单据的标识，然
+后showParameter 用MobileListShowParameter 

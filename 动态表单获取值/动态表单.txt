@@ -1,0 +1,63 @@
+package wens.demo.plugin;
+
+import com.kingdee.bos.ctrl.common.util.StringUtil;
+import java.util.EventObject;
+import java.util.HashMap;
+
+import kd.bos.form.control.Control;
+import kd.bos.bill.AbstractBillPlugIn;
+
+public class FuyemianZiEditPlugin  extends AbstractBillPlugIn{
+	/**
+	 * 
+	 * @Description:TODO(获取父页面字段值)
+	 * @date:2022年3月9日 下午5:24:29    
+	 * @author:OuyangXiaoyue		
+	 * @phone: 13265986134
+	 * @param: @param e  
+	 * @throws
+	 */
+	@Override
+	public void afterBindData(EventObject e) {
+		super.afterBindData(e);
+		this.getView().getParentView().getModel().getValue("creator");
+	}
+	/**
+	 * 
+	 * @Description:TODO(注册监听按钮)
+	 * @date:2022年3月9日 下午5:24:12    
+	 * @author:OuyangXiaoyue		
+	 * @phone: 13265986134
+	 * @param: @param e  
+	 * @throws
+	 */
+	@Override
+    public void registerListener(EventObject e) {
+        super.registerListener(e);
+        //页面确认按钮和取消按钮添加监听
+        this.addClickListeners("btnok", "btncancel");
+    }
+	 /**
+     * 页面点击事件
+     * @param evt
+     */
+    @Override
+    public void click(EventObject evt) {
+        super.click(evt);
+        //获取被点击的控件对象
+        Control source = (Control) evt.getSource();
+        if (StringUtil.equals(source.getKey(), "btnok")) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            //如果被点击控件为确认，则获取页面相关控件值，组装数据传入returnData返回给父页面，最后关闭页面
+            hashMap.put("a", String.valueOf(this.getModel().getValue("cals_a")));
+            hashMap.put("b", String.valueOf(this.getModel().getValue("cals_b")));
+            this.getView().returnDataToParent(hashMap);
+            this.getView().close();
+        } else if (StringUtil.equals(source.getKey(), "btncancel")) {
+            //被点击控件为取消则设置返回值为空并关闭页面（在页面关闭回调方法中必须验证返回值不为空，否则会报空指针）
+            this.getView().returnDataToParent(null);
+            this.getView().close();
+        }
+    }
+
+}
