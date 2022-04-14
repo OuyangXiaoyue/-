@@ -8,12 +8,12 @@ public class TestPlugin extends AbstractFormPlugin implements ItemClickListener 
   *// 点击发生前*
   @Override
   public void beforeItemClick(BeforeItemClickEvnet event) {
-  
+  String key = event.getItemKey();
   }
   
   *// 点击发生后*
   @Override
   public void itemClick(ItemClickEvent event) {
-  
+	String key = event.getItemKey();
   }
 }
