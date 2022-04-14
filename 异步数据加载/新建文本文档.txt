@@ -1,0 +1,27 @@
+@Override
+public void afterCreateNewData(EventObject e) {
+    /**
+        其他首页处理逻辑
+    */
+    
+   this.getView().addClientCallBack("personalInfo", 100);
+}
+
+@Override
+public void clientCallBack(ClientCallBackEvent e) {
+    if("personalInfo".equals(e.getName())) {
+        String userIdStr = RequestContext.get().getUserId();
+         // 待办任务数量
+        long toHandleTaskCount = WorkflowServiceHelper.getTaskCountByType(userIdStr, WorkflowServiceHelper.TOHANDLE);
+        // 未读消息数量
+        long toHandleMsgCount = MessageCenterServiceHelper.getUnReadMessageCount(userIdStr);
+        long total = toHandleTaskCount + toHandleMsgCount;
+        if (total > 0) {
+            Map<String, Object> imgParamMap = new HashMap<>();
+            imgParamMap.put("count", total);
+            imgParamMap.put("offset", new Integer[] { 0, -5 });
+            imgParamMap.put("overflowCount", 99);
+            proxy.invokeControlMethod("usericon", "setBadgeInfo", imgParamMap);
+        }
+    }
+}
